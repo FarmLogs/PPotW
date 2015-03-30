@@ -3,7 +3,7 @@ Statement: For the numbers 1 to 100, (inclusive). Print "fizz" if the number
 is divisible by 3, print "buzz" if the number is divisible by 5. print "fizzbuzz"
 if the number is divisible by both; and if the number is none of those, print the number.
 
-HERE IS THE CATCH: You cannot use the IF statement.
+HERE IS THE CATCH: You cannot use conditional statements.
 ====
 
 e.g.
