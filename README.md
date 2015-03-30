@@ -4,13 +4,13 @@ A collection of Programming problems
 Structure shall be as follows
 
 * 1-FizzBuzz
-  * problem.md (contains the problem statement)
+  * README.md (contains the problem statement)
   * Solutions
     * hiroshi-lol.rb
     * hiroshi-whatever.hs
     * anything
 * 2-Numbers Numbers Numbers
-  * problem.md
+  * README.md
   * Solutions
     * stuff.whatever
 
