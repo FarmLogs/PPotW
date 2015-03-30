@@ -21,5 +21,5 @@ FizzBuzz
 ...
 98
 Fizz
-100
+Buzz
 ```
