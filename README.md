@@ -3,16 +3,16 @@ A collection of Programming problems
 
 Structure shall be as follows
 
-1-FizzBuzz
-  - problem.md (contains the problem statement)
-  - Solutions
-    - hiroshi-lol.rb
-    - hiroshi-whatever.hs
-    - anything
-2-Numbers Numbers Numbers
-  - problem.md
-  - Solutions
-    - stuff.whatever
+* 1-FizzBuzz
+  * problem.md (contains the problem statement)
+  * Solutions
+    * hiroshi-lol.rb
+    * hiroshi-whatever.hs
+    * anything
+* 2-Numbers Numbers Numbers
+  * problem.md
+  * Solutions
+    * stuff.whatever
 
 ===
 Each week new problems should/will be submitted via pull requests.
