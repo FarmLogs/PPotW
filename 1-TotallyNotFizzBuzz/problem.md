@@ -7,6 +7,8 @@ HERE IS THE CATCH: You cannot use the IF statement.
 ====
 
 e.g.
+
+```
 1
 2
 Fizz
@@ -20,5 +22,4 @@ FizzBuzz
 98
 Fizz
 100
-
-
+```
