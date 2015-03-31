@@ -22,4 +22,4 @@
 
 (def fizzbuzz (comp buzz fizz fizzBuzz))
 
-(map fizzbuzz (range 1 101))
+(println (map fizzbuzz (range 1 101)))
