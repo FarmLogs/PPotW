@@ -20,7 +20,7 @@ fizzbuzzes = fbMap 15 FizzBuzz
 fizzbuzz :: Int -> Maybe (FizzBuzz Int)
 fizzbuzz num =
          let get = M.lookup num
-         in (get fizzes) <|> (get buzzes) <|>
-         (get fizzbuzzes) <|> Just (Value num)
+         in get fizzes <|> get buzzes <|>
+         get fizzbuzzes <|> Just (Value num)
 
 main = (sequence_ . fmap print) $ catMaybes (fmap fizzbuzz [1..100])
