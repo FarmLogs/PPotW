@@ -9,6 +9,8 @@ Write me some quines.
 e.g.
 
 ```
-ruby qruby
+➜  2-Quines git:(quines) ruby solutions/qruby.rb
+_="_=%p;puts _%%_";puts _%_
+➜  2-Quines git:(quines) cat solutions/qruby.rb
 _="_=%p;puts _%%_";puts _%_
 ```
