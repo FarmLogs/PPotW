@@ -1,0 +1,3 @@
+Let's call the following paragraph blob:
+"Let's call the following paragraph blob:|Write out the part of blob after the start quote but before the pipe symbol.  On a new line, write out all of blob, including the quotes.  On a new line, write out the part of blob after the pipe symbol but before end quote."
+Write out the part of blob after the start quote but before the pipe symbol.  On a new line, write out all of blob, including the quotes.  On a new line, write out the part of blob after the pipe symbol but before end quote.
