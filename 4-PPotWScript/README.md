@@ -83,3 +83,6 @@ This^ is pretty useless without variable assigment. If your interpreter encounte
 
 ## Errors
 If your interpreter encounters any unfamiliar syntax, feel free to just break without giving any useful output at all.
+
+## Everything Else
+If there's anything not specified here, just assume you can do whatever's easiest for you.
