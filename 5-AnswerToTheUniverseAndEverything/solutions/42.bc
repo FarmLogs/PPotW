@@ -1,0 +1,4 @@
+#!/usr/bin/bc -q
+obase=13
+6 * 9
+quit
