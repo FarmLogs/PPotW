@@ -1,0 +1,95 @@
+# this is my Zsh rc file.
+export TERM=xterm-256color
+
+# I source my psql environment variables here.
+# source /home/hiroshi/env/psqlenv.sh
+
+# refresh the zshrc
+# This function + bindkey lets me hit f5 to refresh the contents of my zshrc, so I can quickly reload environment variables or aliases i've written
+function f5(){
+. ~/.zshrc
+}
+bindkey -s '\e[15~' '^qf5\n'
+
+# ====
+
+
+# function that cd's into a directory and then immediately prints the contents of that directory
+function cs(){
+    cd $1 && ls
+}
+
+# an alias for vim <3
+function v(){
+    vim $*
+}
+
+# move up a directory. i spam the shit out of this
+alias u='cd ..'
+
+# stop typing lein repl. just lr.
+alias lr='lein repl'
+
+# convert an ssl enabled database url into a psql-able one, and psql into it
+function p(){
+  psql $(echo $1 | cut -d '?' -f 1)
+}
+
+# generate a shitty random password. I actually need to fix this.
+function randpass(){
+ openssl rand -base64 $1 | tr / m  | tr + n | tr = a | tr '[:upper:]' '[:lower:]'
+}
+
+
+# for backend, logs for an environment/service
+# e.g. `logs stage agronomy` tails the logs for stage agronomy service
+# `logs live core | grep -i error` grep for all live core errors
+function logs(){
+  heroku logs --app "$1"-farmlogs-api-"$2" --tail
+}
+
+# fetch envs. This is only for stage though. `henv aat`
+function henv(){
+  'heroku run "lein run -m util.env" -a stage-farmlogs-api-"$1" | grep "^export" | sed "s/farmlogs_test/black/"'
+}
+
+# git aliases. self explanatory
+alias gis='git status'
+alias gio='git checkout'
+alias gic='git commit'
+alias gib='git branch'
+alias gish='git push'
+alias gill='git pull'
+alias getch='git fetch'
+alias gilog='git log --color --graph --pretty --all --decorate'
+
+# commits all unstaged files, generates a random fortune using the fortune command and creates a commit.
+alias yolocommit='fortune=$(fortune -n 55 | tr -cd "[:alnum:]|[ \n.]"); git commit -a -m "$fortune"'
+
+# when compiling things, sometimes it's easier to alias python to a specific version
+alias setpy2="sudo ln -f /usr/bin/python2 /usr/bin/python"
+alias setpy3="sudo ln -f /usr/bin/python3 /usr/bin/python"
+
+# bind keys for ctrl up/down/left to up/back/forward in directories
+alias ←="pushd -q +1"
+alias →="pushd -q -1"
+alias ↑="cd .."
+bindkey -s '^u' "↑\n"
+bindkey -s '^b' "←\n"
+bindkey -s '^f' "→\n"
+
+# you can run this yourself. I promise it's not an rm bomb or a hamburger bomb.
+function most_useless_use_of_zsh {
+local lines columns colour a b p q i pnew
+((columns=COLUMNS-1, lines=LINES-1, colour=0))
+for ((b=-1.5; b<=1.5; b+=3.0/lines)) do
+  for ((a=-2.0; a<=1; a+=3.0/columns)) do
+    for ((p=0.0, q=0.0, i=0; p*p+q*q < 4 && i < 32; i++)) do
+      ((pnew=p*p-q*q+a, q=2*p*q+b, p=pnew))
+    done
+    ((colour=(i/4)%8))
+    echo -n "\\e[4${colour}m "
+  done
+  echo
+done
+}
