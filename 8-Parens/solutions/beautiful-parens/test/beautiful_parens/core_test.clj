@@ -6,4 +6,5 @@
   (are [input expected] (= expected (beautiful-parens? input))
        "()()()([''][])" true
        "(((()()'')))" true
-       "((((()()')')))" false))
+       "((((()()')')))" false
+       ")))(((" false))
