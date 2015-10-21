@@ -11,7 +11,7 @@ simple stuff again. This segment we want to balance parens. They must not only h
 *empty* = ""
 ```
 
-The words in italics are the primitives in the language. the characters ', { ,} , (, ), [ and ] are also primitives in this language.
+The words surrounded by ** are the primitives in the language. the characters ', { ,} , (, ), [ and ] are also primitives in this language.
 you do not need to worry about cases like this [(')[']]
 
 
