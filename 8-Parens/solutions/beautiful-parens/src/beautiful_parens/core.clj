@@ -1,44 +1,40 @@
 (ns beautiful-parens.core
   (:gen-class))
 
+(def +paredit+ "If paredit is not for you, then you need to become the sort of person that paredit is for. -Phil Hagelberg")
+
 (defn acc-parens
   [acc c]
-  (if (:quote acc)
-    (if (= \' c)
-      (update-in acc [:quote] not)
-      acc)
-    (cond
-     (#{\( \)} c) (update-in acc [:curved] inc)
-     (#{\[ \]} c) (update-in acc [:square] inc)
-     (#{\{ \}} c) (update-in acc [:curly] inc)
-     (= \' c) (update-in acc [:quote] not)
-     :else acc)))
-
-(defn check-acc
-  [[k v]]
-  (if (= k :quote)
-    (do
-      (when v
-        (println "Fix yo' syntax! Unbalanced" (name k) "bracket"))
-      (not v))
-    (if (even? v)
-      true
-      (println "Fix yo' syntax! Unbalanced" (name k) "bracket"))))
+  (cond
+   (#{\( \{ \[} c) (when-not (:quote acc)
+                     (assoc acc c (cons c (get acc c))))
+   (#{\) \} \]} c) (when-not (:quote acc)
+                     (let [offset (if (= c \)) 1 2) ;; Stupid ascii. Why wouldn't open and close always be one apart?
+                           opener (char (- (int c) offset))
+                           dat-stack-yo (first (get acc opener))]
+                       (if-not dat-stack-yo
+                         (do
+                           (println +paredit+)
+                           (println "Unbalanced" c)
+                           (assoc acc :bal false))
+                         (assoc acc opener (rest (get acc opener))))))
+   (= \' c) (update-in acc [:quote] not)
+   :else acc))
 
 (defn beautiful-parens?
   "Are your parens beautiful?"
   [s]
-  (every?
-   true?
-   (map
-    check-acc
-    (reduce
-     acc-parens
-     {:curved 0
-      :square 0
-      :curly 0
-      :quote false}
-     s))))
+  (let [x (reduce acc-parens {\( '()
+                              \[ '()
+                              \{ '()
+                              :quote false
+                              :bal true}
+                  s)]
+    (and (empty? (x \())
+         (empty? (x \[))
+         (empty? (x \{))
+         (:bal x)
+         (not (:quote x)))))
 
 (defn -main
   "lein run \"(())()()()((([[[]]]]))\""
