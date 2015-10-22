@@ -1,0 +1,7 @@
+match = match-part | empty
+match-part = match-paren | match-sq-paren | match-crl-paren | match-quo | match-part match
+match-paren = "("match")"
+match-sq-paren = "["match"]"
+match-crl-paren = "{"match"}"
+match-quo = #"'[^'\\]*(?:\\.[^'\\]*)*'(?x) #Single-quoted string"
+empty = ""
