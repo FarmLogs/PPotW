@@ -1,8 +1,4 @@
-package trees
-
-import com.google.common.collect.HashBasedTable
-import com.google.common.collect.Multimaps
-import com.google.common.collect.Sets
+import com.google.common.collect.*
 import set
 import java.io.PrintWriter
 import java.nio.ByteBuffer
@@ -34,11 +30,44 @@ class CharSequenceTrie {
 
   fun insertSorted(charSequence: CharSequence) {
     var pointer = rootNode
-    println("wut: ${charSequence.toString().asSequence().sorted().joinToString("")}")
+    //    println("wut: ${charSequence.toString().asSequence().sorted().joinToString("")}")
     val sorted = charSequence.toString().asSequence().sorted()
     for ((i, c) in sorted.withIndex()) {
       pointer = pointer.getOrAddChild(c, if (i == charSequence.length - 1) charSequence else null)
     }
+  }
+
+  // TODO: proof of concept, non-exhaustive
+  fun search(charSequence: CharSequence) = String(charSequence.toString().toCharArray().apply { sort() }).let {
+    searchSorted(ImmutableMultiset.copyOf(it.toList()), it)
+  }
+
+  private fun searchSorted(source: ImmutableMultiset<Char>, charSequence: CharSequence, result: MutableSet<MutableSet<CharSequence>> = hashSetOf(), seen: MutableSet<CharSequence> = hashSetOf()): MutableSet<MutableSet<CharSequence>> {
+    //    println("Subsequence: $charSequence")
+        seen.add(charSequence)
+    var pointer = rootNode
+    for ((i, c) in charSequence.toString().asSequence().withIndex()) {
+
+      pointer = pointer[c] ?: break
+      val matches = pointer.matches
+      if (!matches.isEmpty()) {
+        val matchSets = matches.map { hashSetOf(it) }
+        result.addAll(matchSets)
+        if (i < charSequence.length - 1) {
+          val remaining = HashMultiset.create(source)
+          matches.first().toString().toList().forEach { remaining.remove(it) }
+          for (subResult in search(String(remaining.toCharArray()))) {
+            for (match in matchSets) {
+              result.add(subResult.union(match).toHashSet())
+            }
+          }
+        }
+      }
+    }
+    charSequence.combinations().filter { it !in seen }.forEach { subSequence ->
+      searchSorted(source, subSequence, result, seen)
+    }
+    return result
   }
 
   fun prettyPrint(printWriter: PrintWriter) = rootNode.prettyPrint(printWriter)
@@ -58,18 +87,30 @@ class CharSequenceTrie {
     open val matches: Set<CharSequence>
       get() = emptySet()
 
-    fun addChild(value: Char, match: CharSequence? = null): Node = Node(this, depth + 1, value, match).apply {
+    operator fun get(value: Char): Node? = nodeChildren[this, value]
+
+    fun addChild(value: Char, match: CharSequence? = null): Node = Node(this, depth + 1, value).apply {
+      if (match != null) {
+        leafMatches[this].add(match)
+      }
       if (nodeChildren.containsRow(this)) {
         throw IllegalStateException("Hash collision occurred: $this")
       }
       nodeChildren[this@AbstractNode, value] = this
     }
 
-    fun getOrAddChild(value: Char, match: CharSequence? = null): Node = children[value] ?: addChild(value, match)
+    fun getOrAddChild(value: Char, match: CharSequence? = null): Node = children[value]?.apply {
+      if (match != null) {
+        leafMatches[this].add(match)
+      }
+    } ?: addChild(value, match)
 
-    private fun hashStringBuilder(): StringBuilder {
-      val builder = parent?.hashStringBuilder() ?: StringBuilder()
-      return builder.append("-").append(if (value == UNDEFINED_CHAR) "ROOT" else value)
+    private fun positionStringBuilder(): StringBuilder {
+      return (parent?.positionStringBuilder()?.append(value) ?: StringBuilder())
+    }
+
+    val position: String by lazy {
+      positionStringBuilder().toString()
     }
 
     private val code = ++nodeCount
@@ -80,7 +121,7 @@ class CharSequenceTrie {
     override fun toString() = "Node(depth = $depth, value = $value)"
 
     fun prettyPrint(printWriter: PrintWriter): Unit = with (printWriter) {
-      for (i in 0 until depth * 2){
+      for (i in 0 until depth * 2) {
         append(" ")
       }
       append("└(")
@@ -99,13 +140,8 @@ class CharSequenceTrie {
 
   }
 
-  inner class Node(override val parent: AbstractNode, depth: Int, value: Char, match: CharSequence? = null)
+  inner class Node(override val parent: AbstractNode, depth: Int, value: Char)
   : AbstractNode(parent, depth, value) {
-
-    init {
-      if (match != null) leafMatches[this] += match
-      println("Create $depth $value ${hashCode()}")
-    }
 
     override val isLeaf: Boolean
       get() = !leafMatches[this].isEmpty()
@@ -114,5 +150,4 @@ class CharSequenceTrie {
       get() = leafMatches[this] as Set<CharSequence>
 
   }
-
 }

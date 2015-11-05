@@ -1,4 +1,3 @@
-import trees.CharSequenceTrie
 import java.io.File
 import java.nio.charset.Charset
 
@@ -11,19 +10,14 @@ fun main(args: Array<String>) {
   val tree = CharSequenceTrie()
 
   withDictionary(args[0]) { words ->
-    words.forEach { word ->
+    words.filter { it.length > 1 }.forEach { word ->
       tree.insertSorted(word)
     }
   }
 
   println("Done creating tree")
 
-  val f = File("dict_tree.txt")
-  f.printWriter().use { writer ->
-    tree.prettyPrint(writer)
-  }
-
-  println("Wrote tree to file")
+  println(tree.search("thebrownfox"))
 }
 
 inline fun withDictionary(path: String, block: (Sequence<String>) -> Unit) {
