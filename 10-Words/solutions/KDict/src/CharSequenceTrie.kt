@@ -1,14 +1,12 @@
 import com.google.common.collect.*
-import set
 import java.io.PrintWriter
-import java.nio.ByteBuffer
-import java.security.MessageDigest
-import java.security.SecureRandom
 
 /**
  * @author Damian Wieczorek {@literal <damian@farmlogs.com>}
  * @since 11/4/15
  * (C) 2015 Damian Wieczorek
+ *
+ * Simple tree of chars for searching the dictionary
  */
 class CharSequenceTrie {
 
@@ -17,6 +15,7 @@ class CharSequenceTrie {
   private val nodeChildren = HashBasedTable.create<AbstractNode, Char, Node>()
 
   // terrible way to generate hash code, but I can't stop getting collisions
+  // shouldn't matter; duplicate nodes are not inserted
   private var nodeCount = 0
 
   val rootNode = object : AbstractNode(null, 0, UNDEFINED_CHAR) {}
@@ -29,25 +28,27 @@ class CharSequenceTrie {
   }
 
   fun insertSorted(charSequence: CharSequence) {
+    val sorted = charSequence.toString().toSortedSet()
     var pointer = rootNode
-    //    println("wut: ${charSequence.toString().asSequence().sorted().joinToString("")}")
-    val sorted = charSequence.toString().asSequence().sorted()
     for ((i, c) in sorted.withIndex()) {
       pointer = pointer.getOrAddChild(c, if (i == charSequence.length - 1) charSequence else null)
     }
   }
 
-  // TODO: proof of concept, non-exhaustive
   fun search(charSequence: CharSequence) = String(charSequence.toString().toCharArray().apply { sort() }).let {
     searchSorted(ImmutableMultiset.copyOf(it.toList()), it)
   }
 
-  private fun searchSorted(source: ImmutableMultiset<Char>, charSequence: CharSequence, result: MutableSet<MutableSet<CharSequence>> = hashSetOf(), seen: MutableSet<CharSequence> = hashSetOf()): MutableSet<MutableSet<CharSequence>> {
-    //    println("Subsequence: $charSequence")
-        seen.add(charSequence)
+  /*
+  * This is about the worst thing ever. But it works :)
+  */
+  private fun searchSorted(source: ImmutableMultiset<Char>,
+                           charSequence: CharSequence,
+                           result: MutableSet<MutableSet<CharSequence>> = hashSetOf(),
+                           seen: MutableSet<CharSequence> = hashSetOf()): MutableSet<MutableSet<CharSequence>> {
+    seen.add(charSequence)
     var pointer = rootNode
     for ((i, c) in charSequence.toString().asSequence().withIndex()) {
-
       pointer = pointer[c] ?: break
       val matches = pointer.matches
       if (!matches.isEmpty()) {
@@ -146,6 +147,7 @@ class CharSequenceTrie {
     override val isLeaf: Boolean
       get() = !leafMatches[this].isEmpty()
 
+    @Suppress("UNCHECKED_CAST")
     override val matches: Set<CharSequence>
       get() = leafMatches[this] as Set<CharSequence>
 

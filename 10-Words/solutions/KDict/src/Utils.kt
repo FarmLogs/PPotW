@@ -15,13 +15,10 @@ fun CharSequence.suffixesSequence(): Sequence<CharSequence> = (0 until length).a
 }
 
 fun CharSequence.combinations(): Sequence<CharSequence> {
-//  println("Combinations for: $this")
   val seen = hashSetOf<CharSequence>()
   val first = this[0].toString()
   return suffixesSequence().drop(1).filter {
-    val pass = it !in seen
-    seen.add(it)
-    pass
+    (it !in seen).apply { seen.add(it) }
   }.flatMap { suffix ->
     suffix.combinations().map { first + it }
   } + suffixesSequence().drop(1)
