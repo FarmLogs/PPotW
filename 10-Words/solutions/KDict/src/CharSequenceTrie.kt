@@ -259,7 +259,6 @@ class CharSequenceTrie {
     override val isLeaf: Boolean
       get() = !leafMatches[this].isEmpty()
 
-    @Suppress("UNCHECKED_CAST")
     override val matches: Set<CharSequence>
       get() = leafMatches[this]
 
