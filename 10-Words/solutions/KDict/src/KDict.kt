@@ -7,20 +7,27 @@ import java.nio.charset.Charset
  * (C) 2015 Damian Wieczorek
  */
 fun main(args: Array<String>) {
+
   val tree = CharSequenceTrie()
 
-  withDictionary(args[0]) { words ->
-    words.filter { it.length > 1 }.forEach { word ->
-      tree.insertSorted(word)
+  time("Populate tree") {
+    usingDictionary(args[0]) { words ->
+      words.filter { it.length > 1 }.forEach { word ->
+        tree.insertSorted(word)
+      }
     }
   }
 
-  println("Done creating tree")
-
-  println(tree.search("thebrownfox"))
+  time ("Search for anagrams") {
+    val combinations = tree.search("thebrownfox")
+    val stats = combinations.intStatistics { size }
+    println("Count: ${combinations.size}")
+    println("Distinct words: ${combinations.count { it.size == 1 }}")
+    println("Stats: $stats")
+  }
 }
 
-inline fun withDictionary(path: String, block: (Sequence<String>) -> Unit) {
+inline fun usingDictionary(path: String, block: (Sequence<String>) -> Unit) {
   val f = File(path)
   if (!f.exists()) {
     throw IllegalArgumentException("Dictionary file $path does not exist")

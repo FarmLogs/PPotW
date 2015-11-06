@@ -1,4 +1,5 @@
 import com.google.common.collect.Table
+import java.util.*
 
 /**
  * @author Damian Wieczorek {@literal <damian@farmlogs.com>}
@@ -14,6 +15,14 @@ fun CharSequence.suffixesSequence(): Sequence<CharSequence> = (0 until length).a
   subSequence(it, length)
 }
 
+fun <T> Iterable<T>.intStatistics(toInt: T.() -> Int) = IntSummaryStatistics().apply {
+  forEach { accept(it.toInt()) }
+}
+
+/**
+ * This one's made from my own sleep deprivation, rather than tears.
+ * It's also incomprehensible.
+ */
 fun CharSequence.combinations(): Sequence<CharSequence> {
   val seen = hashSetOf<CharSequence>()
   val first = this[0].toString()
@@ -22,4 +31,11 @@ fun CharSequence.combinations(): Sequence<CharSequence> {
   }.flatMap { suffix ->
     suffix.combinations().map { first + it }
   } + suffixesSequence().drop(1)
+}
+
+inline fun time(name: String, block: () -> Unit) {
+  val start = System.currentTimeMillis()
+  block()
+  val end = System.currentTimeMillis()
+  println("$name -- Elapsed Time: ${(end - start) / 1000.0} seconds")
 }
