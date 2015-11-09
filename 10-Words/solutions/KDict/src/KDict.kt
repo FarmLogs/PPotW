@@ -21,9 +21,12 @@ fun main(args: Array<String>) {
   time ("Search for anagrams") {
     val combinations = tree.search("thebrownfox")
     val stats = combinations.intStatistics { size }
-    println("Count: ${combinations.size}")
-    println("Distinct words: ${combinations.count { it.size == 1 }}")
-    println("Stats: $stats")
+    printerr("Count: ${combinations.size}")
+    printerr("Distinct words: ${combinations.count { it.size == 1 }}")
+    printerr("Stats: $stats")
+
+    val charCount = combinations.sumBy { it.sumBy { it.length } }
+    println("$charCount")
   }
 }
 

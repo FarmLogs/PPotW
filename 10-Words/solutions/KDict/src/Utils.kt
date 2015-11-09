@@ -37,5 +37,7 @@ inline fun time(name: String, block: () -> Unit) {
   val start = System.currentTimeMillis()
   block()
   val end = System.currentTimeMillis()
-  println("$name -- Elapsed Time: ${(end - start) / 1000.0} seconds")
+  printerr("$name -- Elapsed Time: ${(end - start) / 1000.0} seconds")
 }
+
+fun printerr(message: String) = System.err.println(message)
