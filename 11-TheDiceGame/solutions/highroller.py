@@ -33,7 +33,7 @@ def child_count(stem):
     return n
 
 dice = []
-for die in xrange(1, args.numdice + 1):
+for die in xrange(args.numdice):
     char_to_child_count = defaultdict(int)
     for c in ascii_lowercase:
         char_to_child_count[c] = sum(child_count(stem + (c,)) for stem in itertools.product(*dice))
