@@ -14,6 +14,6 @@ Now let's roll all of these dice together at once. Say we get 1:B, 2:O, 3:K, and
 
 Let's lay down a couple quick rules
 
-1. You cannot just label more than one side of a die with the same letter. None of this 1:D,D,D - 2:U,U,U - 3:C,C,C - 4:K,K,K business.
+1. You cannot label more than one side of a die with the same letter. None of this 1:D,D,D - 2:U,U,U - 3:C,C,C - 4:K,K,K business. or even 1: D,U,U
 2. You may however reuse letters on other dice like the sample shows die 2 and die 4 using the letter O.
 3. Output of your program should include your dice set, total number of four-letter word combinations and probability of rolling a 4 letter dictionary word.
